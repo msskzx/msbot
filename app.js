@@ -139,6 +139,8 @@ function activityIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var activities = JSON.parse(body).data;
+            console.log(activities.length);
+            console.log(activities[0]);
             for (var i = 0; i < activities.length && i < 5; i++)
             {
                 console.log('sending');
