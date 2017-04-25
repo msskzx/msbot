@@ -138,9 +138,11 @@ function activityIndex(senderID) {
         if (errors) {
             console.log("Error sending message: " + response.errors);
         } else {
-            console.log(body);
-            for (var i = 0; i < body.data.activities.length && i < 5; i++)
-                sendMessage(senderID, { text: body.data.activities[i].name });
+            console.log(JSON.parse(body));
+            var activities = JSON.parse(body).data;
+            console.log(activities);
+            for (var i = 0; i < activities.length && i < 5; i++)
+                sendMessage(senderID, { text: activities[i].name });
         }
     });
 }
