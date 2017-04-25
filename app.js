@@ -87,7 +87,7 @@ function processMessage(event) {
 
         if (message.text) {
             var formattedMsg = message.text.toLowerCase().trim();
-            switch (messageText) {
+            switch (formattedMsg) {
                 case 'activities':
                     activityIndex(senderID);
                     break;
