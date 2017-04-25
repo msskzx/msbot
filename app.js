@@ -139,7 +139,6 @@ function activityIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var activities = JSON.parse(body).data.activities;
-            sendMessage(senderID, {text: 'trying to send the activities...'});
             for (var i = 0; i < activities.length && i < 5; i++)
             {
                 sendMessage(senderID, { text: activities[i].name });
@@ -156,11 +155,27 @@ function businessIndex(senderID) {
         if (errors) {
             console.log("Error sending message: " + response.errors);
         } else {
-            var businesses = JSON.parse(body).data.businesss;
-            sendMessage(senderID, {text: 'trying to send the businesses...'});
+            var businesses = JSON.parse(body).data.businesses;
             for (var i = 0; i < businesses.length && i < 5; i++)
             {
                 sendMessage(senderID, { text: businesses[i].name });
+            }
+        }
+    });
+}
+
+function promotionsIndex(senderID) {
+    request({
+        url: msAPI + "/promotions/page/0",
+        method: "GET",
+    }, function(errors, response, body) {
+        if (errors) {
+            console.log("Error sending message: " + response.errors);
+        } else {
+            var promotions = JSON.parse(body).data.promotions;
+            for (var i = 0; i < promotions.length && i < 5; i++)
+            {
+                sendMessage(senderID, { text: promotions[i].discountValue });
             }
         }
     });
