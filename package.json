@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "nf app.js"
   },
   "repository": {
     "type": "git",
@@ -16,6 +16,8 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "foreman": "2.0.0",
+    "nodemon": "^1.11.0",
     "request": "^2.75.0"
   }
 }

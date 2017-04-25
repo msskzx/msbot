@@ -2,6 +2,8 @@ var express = require("express");
 var request = require("request");
 var bodyParser = require("body-parser");
 
+const msAPI = 'http://35.160.199.92:8080'
+
 var app = express();
 app.set('port', process.env.PORT || 5000);
 app.use(bodyParser.urlencoded({
@@ -9,16 +11,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// Server index page
-app.get("/", function(req, res) {
-    res.status(200).json({
-        status: 'success',
-        message: "why look at this! it's working!"
-    });
-});
-
-// Facebook Webhook
-// Used for verification
 app.get("/webhook", function(req, res) {
     if (req.query["hub.verify_token"] === process.env.VERIFY_TOKEN) {
         res.status(200).send(req.query["hub.challenge"]);
@@ -27,14 +19,9 @@ app.get("/webhook", function(req, res) {
     }
 });
 
-// All callbacks for Messenger will be POST-ed here
 app.post("/webhook", function(req, res) {
-    // Make sure this is a page subscription
     if (req.body.object == "page") {
-        // Iterate over each entry
-        // There may be multiple entries if batched
         req.body.entry.forEach(function(entry) {
-            // Iterate over each messaging event
             entry.messaging.forEach(function(event) {
                 if (event.postback) {
                     processPostback(event);
@@ -43,20 +30,28 @@ app.post("/webhook", function(req, res) {
                 }
             });
         });
-
         res.sendStatus(200);
     }
 });
 
+// 404 for any other route
+app.use(function(req, res, next) {
+    if (!res.headersSent) {
+        res.status(404).json({
+            status: 'fail',
+            message: 'Not found'
+        });
+    }
+    next();
+});
+
 function processPostback(event) {
-    var senderId = event.sender.id;
+    var senderID = event.sender.id;
     var payload = event.postback.payload;
 
     if (payload === "Greeting") {
-        // Get user's first name from the User Profile API
-        // and include it in the greeting
         request({
-            url: "https://graph.facebook.com/v2.6/" + senderId,
+            url: "https://graph.facebook.com/v2.6/" + senderID,
             qs: {
                 access_token: process.env.ACCESS_TOKEN,
                 fields: "first_name"
@@ -70,16 +65,16 @@ function processPostback(event) {
                 var bodyObj = JSON.parse(body);
                 greeting = "Hey, " + bodyObj.first_name + "!";
             }
-            sendMessage(senderId, {
+            sendMessage(senderID, {
                 text: greeting
             });
         });
     } else if (payload === "Correct") {
-        sendMessage(senderId, {
+        sendMessage(senderID, {
             text: "Yay!"
         });
     } else if (payload === "Incorrect") {
-        sendMessage(senderId, {
+        sendMessage(senderID, {
             text: "Oops!"
         });
     }
@@ -88,16 +83,30 @@ function processPostback(event) {
 function processMessage(event) {
     if (!event.message.is_echo) {
         var message = event.message;
-        var senderId = event.sender.id;
+        var senderID = event.sender.id;
 
-        // You may get a text or attachment but not both
         if (message.text) {
-            var formattedMsg = message.text.toUpperCase().trim();
-            sendMessage(senderId, {
-                text: formattedMsg
-            });
+            var formattedMsg = message.text.toLowerCase().trim();
+            switch (formattedMsg) {
+                case 'activities':
+                    activityIndex(senderID);
+                    break;
+
+                case 'businesses':
+                    businessIndex(senderID);
+                    break;
+
+                case 'promotions':
+                    promotionIndex(senderID);
+                    break;
+
+                default:
+                    sendMessage(senderID, {
+                        text: "bitte?"
+                    });
+            }
         } else if (message.attachments) {
-            sendMessage(senderId, {
+            sendMessage(senderID, {
                 text: "bitte?"
             });
         }
@@ -125,6 +134,58 @@ function sendMessage(recipientId, message) {
     });
 }
 
+function activityIndex(senderID) {
+    request({
+        url: msAPI + "/activities/page/0",
+        method: "GET",
+    }, function(errors, response, body) {
+        if (errors) {
+            console.log("Error sending message: " + response.errors);
+        } else {
+            var activities = JSON.parse(body).data.activities;
+            for (var i = 0; i < activities.length && i < 5; i++)
+            {
+                sendMessage(senderID, { text: activities[i].name });
+            }
+        }
+    });
+}
+
+function businessIndex(senderID) {
+    request({
+        url: msAPI + "/businesses/page/0",
+        method: "GET",
+    }, function(errors, response, body) {
+        if (errors) {
+            console.log("Error sending message: " + response.errors);
+        } else {
+            var businesses = JSON.parse(body).data.businesses;
+            for (var i = 0; i < businesses.length && i < 5; i++)
+            {
+                sendMessage(senderID, { text: businesses[i].name });
+            }
+        }
+    });
+}
+
+function promotionIndex(senderID) {
+    request({
+        url: msAPI + "/promotions/page/0",
+        method: "GET",
+    }, function(errors, response, body) {
+        if (errors) {
+            console.log("Error sending message: " + response.errors);
+        } else {
+            var promotions = JSON.parse(body).data.promotions;
+            for (var i = 0; i < promotions.length && i < 5; i++)
+            {
+                sendMessage(senderID, { text: promotions[i].discountValue });
+            }
+        }
+    });
+}
+
 app.listen(app.get('port'), function() {
-    console.log('run, bot... run');
+    console.log('run, bot... run...');
+    console.log(app.get('port'));
 });
