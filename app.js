@@ -138,21 +138,32 @@ function activityIndex(senderID) {
         if (errors) {
             console.log("Error sending message: " + response.errors);
         } else {
-            var activities = JSON.parse(body).data;
-            console.log(activities.length);
-            console.log(activities[0]);
+            var activities = JSON.parse(body).data.activities;
+            sendMessage(senderID, {text: 'trying to send the activities...'});
             for (var i = 0; i < activities.length && i < 5; i++)
             {
-                console.log('sending');
                 sendMessage(senderID, { text: activities[i].name });
-                console.log('sent');
             }
         }
     });
 }
 
 function businessIndex(senderID) {
-
+    request({
+        url: msAPI + "/businesses/page/0",
+        method: "GET",
+    }, function(errors, response, body) {
+        if (errors) {
+            console.log("Error sending message: " + response.errors);
+        } else {
+            var businesses = JSON.parse(body).data.businesss;
+            sendMessage(senderID, {text: 'trying to send the businesses...'});
+            for (var i = 0; i < businesses.length && i < 5; i++)
+            {
+                sendMessage(senderID, { text: businesses[i].name });
+            }
+        }
+    });
 }
 
 app.listen(app.get('port'), function() {
