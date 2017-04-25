@@ -127,4 +127,5 @@ function sendMessage(recipientId, message) {
 
 app.listen(app.get('port'), function() {
     console.log('run, bot... run');
+    console.log(app.get('port'));
 });
