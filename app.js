@@ -138,12 +138,13 @@ function activityIndex(senderID) {
         if (errors) {
             console.log("Error sending message: " + response.errors);
         } else {
-            console.log(JSON.parse(body));
             var activities = JSON.parse(body).data;
-            console.log('activitititititi');
-            console.log(activities);
             for (var i = 0; i < activities.length && i < 5; i++)
+            {
+                console.log('sending');
                 sendMessage(senderID, { text: activities[i].name });
+                console.log('sent');
+            }
         }
     });
 }
