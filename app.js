@@ -96,6 +96,10 @@ function processMessage(event) {
                     businessIndex(senderID);
                     break;
 
+                case 'promotions':
+                    promotionIndex(senderID);
+                    break;
+
                 default:
                     sendMessage(senderID, {
                         text: "bitte?"
@@ -164,7 +168,7 @@ function businessIndex(senderID) {
     });
 }
 
-function promotionsIndex(senderID) {
+function promotionIndex(senderID) {
     request({
         url: msAPI + "/promotions/page/0",
         method: "GET",
