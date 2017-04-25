@@ -98,7 +98,7 @@ function processMessage(event) {
 
                 default:
                     sendMessage(senderID, {
-                        text: "why you no use commands that I know?"
+                        text: "bitte?"
                     });
             }
         } else if (message.attachments) {
@@ -140,6 +140,7 @@ function activityIndex(senderID) {
         } else {
             console.log(JSON.parse(body));
             var activities = JSON.parse(body).data;
+            console.log('activitititititi');
             console.log(activities);
             for (var i = 0; i < activities.length && i < 5; i++)
                 sendMessage(senderID, { text: activities[i].name });
