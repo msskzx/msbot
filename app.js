@@ -46,12 +46,12 @@ app.use(function(req, res, next) {
 });
 
 function processPostback(event) {
-    var senderId = event.sender.id;
+    var senderID = event.sender.id;
     var payload = event.postback.payload;
 
     if (payload === "Greeting") {
         request({
-            url: "https://graph.facebook.com/v2.6/" + senderId,
+            url: "https://graph.facebook.com/v2.6/" + senderID,
             qs: {
                 access_token: process.env.ACCESS_TOKEN,
                 fields: "first_name"
@@ -65,16 +65,16 @@ function processPostback(event) {
                 var bodyObj = JSON.parse(body);
                 greeting = "Hey, " + bodyObj.first_name + "!";
             }
-            sendMessage(senderId, {
+            sendMessage(senderID, {
                 text: greeting
             });
         });
     } else if (payload === "Correct") {
-        sendMessage(senderId, {
+        sendMessage(senderID, {
             text: "Yay!"
         });
     } else if (payload === "Incorrect") {
-        sendMessage(senderId, {
+        sendMessage(senderID, {
             text: "Oops!"
         });
     }
@@ -83,7 +83,7 @@ function processPostback(event) {
 function processMessage(event) {
     if (!event.message.is_echo) {
         var message = event.message;
-        var senderId = event.sender.id;
+        var senderID = event.sender.id;
 
         if (message.text) {
             var formattedMsg = message.text.toLowerCase().trim();
@@ -102,7 +102,7 @@ function processMessage(event) {
                     });
             }
         } else if (message.attachments) {
-            sendMessage(senderId, {
+            sendMessage(senderID, {
                 text: "bitte?"
             });
         }
@@ -130,7 +130,7 @@ function sendMessage(recipientId, message) {
     });
 }
 
-function activityIndex(senderId) {
+function activityIndex(senderID) {
     request({
         url: msAPI + "/activities/page/0",
         method: "GET",
@@ -141,12 +141,12 @@ function activityIndex(senderId) {
             console.log(response);
             console.log(body);
             for (var i = 0; i < body.data.activities.length && i < 5; i++)
-                sendMessage(senderId, { text: body.data.activities[i].name });
+                sendMessage(senderID, { text: body.data.activities[i].name });
         }
     });
 }
 
-function businessIndex(senderId) {
+function businessIndex(senderID) {
 
 }
 
