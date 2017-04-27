@@ -187,7 +187,7 @@ function activityIndex(senderID) {
 }
 
 function sendActivityTempelate(recipientID, activity) {
-    sendMessage(senderID, {
+    sendMessage(recipientID, {
         attachment: {
             type: "template",
             payload: {
