@@ -197,7 +197,7 @@ function sendActivityTempelate(recipientID, activity) {
                     buttons: [{
                         type: "web_url",
                         title: "View",
-                        url: msAPP,
+                        url: 'http://35.160.199.92:8000'
                     }]
                 }]
             }
