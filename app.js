@@ -179,7 +179,6 @@ function activityIndex(senderID) {
         } else {
             var activities = JSON.parse(body).data.activities;
             for (var i = 0; i < activities.length && i < 5; i++) {
-                console.log("send");
                 sendActivityTempelate(senderID, activities[i]);
             }
         }
@@ -194,7 +193,7 @@ function sendActivityTempelate(recipientID, activity) {
                 template_type: "generic",
                 elements: [{
                     title: activity.name,
-                    image_url: activity.image ? msAPI + "/uploads/" + activity.image : msAPP + "/static/default/images/defaultPic.png",
+                    image_url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg",
                     buttons: [{
                         type: "web_url",
                         title: "View",
