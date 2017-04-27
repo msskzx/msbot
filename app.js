@@ -187,11 +187,6 @@ function activityIndex(senderID) {
 }
 
 function sendActivityTempelate(recipientID, activity) {
-    var image = "";
-    if (activity.images && activity.images.length > 0) {
-        image = activity.images[0];
-    }
-
     sendMessage(senderID, {
         attachment: {
             type: "template",
