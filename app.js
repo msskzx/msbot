@@ -153,7 +153,7 @@ function activityIndex(senderID) {
 
 function sendActivityTempelate(recipientID, activity) {
     var image = "";
-    if (images.length > 0) {
+    if (activity.images && activity.images.length > 0) {
         image = activity.images[0];
     }
 
