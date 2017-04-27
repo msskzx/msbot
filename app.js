@@ -200,7 +200,7 @@ function sendActivityTempelate(recipientID, activity) {
                         type: "web_url",
                         title: "View",
                         url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg",
-                    }
+                    }]
                 }]
             }
         }
