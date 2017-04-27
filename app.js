@@ -103,14 +103,14 @@ function processMessage(event) {
             sendMessage(senderID, {
                 text: "you can type \"help\" to get a list of available commands"
             });
-        }
-    } else {
-        if (message.attachments) {
-            sendMessage(senderID, {
-                text: "cannot process attachments yet :/"
-            });
-        }
+        } else {
+            if (message.attachments) {
+                sendMessage(senderID, {
+                    text: "cannot process attachments yet :/"
+                });
+            }
 
+        }
     }
 }
 
