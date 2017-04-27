@@ -138,13 +138,12 @@ function sendMessage(recipientID, message) {
 
 function sendHelp(senderID) {
     sendMessage(senderID, {
-        text:
-        `activities (gets max of 5 activities)
-        businesses (gets max of 5 businesses)
-        promotions (gets max of 5 promotions)
-        search a "keword" (search activities using the given keyword)
-        search b "keword" (search businesses using the given keyword)
-        help (list of available commands)`
+        text: `"activities" (gets max of 5 activities)
+        "businesses" (gets max of 5 businesses)
+        "promotions" (gets max of 5 promotions)
+        "search a <keword>" (search activities using the given keyword)
+        "search b <keword>" (search businesses using the given keyword)
+        "help" (list of available commands)`
     });
 }
 
@@ -201,6 +200,9 @@ function sendActivityTempelate(recipientID, activity) {
             }
         }
     });
+    sendMessage(recipientID, {
+        text: msAPP + '/activity/' + activity._id
+    });
 }
 
 
@@ -256,6 +258,9 @@ function sendBusinessTempelate(recipientID, business) {
             }
         }
     });
+    sendMessage(recipientID, {
+        text: msAPP + '/profile/?username=' + business.userId.username
+    });
 }
 
 
@@ -293,6 +298,9 @@ function sendPromotionTempelate(recipientID, promotion) {
                 }]
             }
         }
+    });
+    sendMessage(recipientID, {
+        text: msAPP + '/activity/' + promotion.activityId._id
     });
 }
 
