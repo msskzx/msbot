@@ -2,7 +2,8 @@ var express = require("express");
 var request = require("request");
 var bodyParser = require("body-parser");
 
-const msAPI = 'http://35.160.199.92:8080'
+const msAPI = 'http://35.160.199.92:8080';
+const msAPP = 'http://35.160.199.92:8000';
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -114,7 +115,7 @@ function processMessage(event) {
 }
 
 // sends message to user
-function sendMessage(recipientId, message) {
+function sendMessage(recipientID, message) {
     request({
         url: "https://graph.facebook.com/v2.6/me/messages",
         qs: {
@@ -123,7 +124,7 @@ function sendMessage(recipientId, message) {
         method: "POST",
         json: {
             recipient: {
-                id: recipientId
+                id: recipientID
             },
             message: message,
         }
@@ -143,13 +144,58 @@ function activityIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var activities = JSON.parse(body).data.activities;
-            for (var i = 0; i < activities.length && i < 5; i++)
-            {
-                sendMessage(senderID, { text: activities[i].name });
+            for (var i = 0; i < activities.length && i < 5; i++) {
+                sendActivityTempelate(senderID, activities[i]);
             }
         }
     });
 }
+
+function sendActivityTempelate(recipientID, activity) {
+    request({
+        url: "https://graph.facebook.com/v2.6/me/messages",
+        qs: {
+            access_token: process.env.ACCESS_TOKEN
+        },
+        method: "POST",
+        json: {
+            "recipient": {
+                "id": recipientID
+            },
+            "message": {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [{
+                            "title": activity.name,
+                            "image_url": activity.images[0],
+                            "subtitle": activity.businessId.name,
+                            "default_action": {
+                                "type": "web_url",
+                                "url": msAPP+"/activity/"+activity._id,
+                                "messenger_extensions": true,
+                                "webview_height_ratio": "tall",
+                                "fallback_url": msAPP
+                            },
+                            "buttons": [{
+                                "type": "web_url",
+                                "url": msAPP+"/activity/"+activity._id,
+                                "title": "Reserve"
+                            }]
+                        }]
+                    }
+                }
+            }
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log("Error sending message: " + response.error);
+        }
+    });
+}
+
+
 
 function businessIndex(senderID) {
     request({
@@ -160,9 +206,10 @@ function businessIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var businesses = JSON.parse(body).data.businesses;
-            for (var i = 0; i < businesses.length && i < 5; i++)
-            {
-                sendMessage(senderID, { text: businesses[i].name });
+            for (var i = 0; i < businesses.length && i < 5; i++) {
+                sendMessage(senderID, {
+                    text: businesses[i].name
+                });
             }
         }
     });
@@ -177,9 +224,10 @@ function promotionIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var promotions = JSON.parse(body).data.promotions;
-            for (var i = 0; i < promotions.length && i < 5; i++)
-            {
-                sendMessage(senderID, { text: promotions[i].discountValue });
+            for (var i = 0; i < promotions.length && i < 5; i++) {
+                sendMessage(senderID, {
+                    text: promotions[i].discountValue
+                });
             }
         }
     });
