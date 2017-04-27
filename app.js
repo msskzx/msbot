@@ -50,13 +50,9 @@ function processPostback(event) {
     var senderID = event.sender.id;
     var payload = event.postback.payload;
 
-    if (payload === "Correct") {
+    if (payload === "App") {
         sendMessage(senderID, {
-            text: "Yay!"
-        });
-    } else if (payload === "Incorrect") {
-        sendMessage(senderID, {
-            text: "Oops!"
+            text: 'you can check them here: ' + msAPP
         });
     }
 }
@@ -138,11 +134,11 @@ function sendMessage(recipientID, message) {
 
 function sendHelp(senderID) {
     sendMessage(senderID, {
-        text: `"activities" (gets max of 5 activities)\n` +
-            `"businesses" (gets max of 5 businesses)\n` +
-            `"promotions" (gets max of 5 promotions)+\n` +
-            `"search a <keword>" (search activities using the given keyword)\n` +
-            `"search b <keword>" (search businesses using the given keyword)\n` +
+        text: `"activities" (gets max of 5 activities)\n---\n` +
+            `"businesses" (gets max of 5 businesses)\n---\n` +
+            `"promotions" (gets max of 5 promotions)\n---\n` +
+            `"search a <keword>" (search activities using the given keyword)\n---\n` +
+            `"search b <keword>" (search businesses using the given keyword)\n---\n` +
             `"help" (list of available commands)\n`
     });
 }
@@ -192,16 +188,16 @@ function sendActivityTempelate(recipientID, activity) {
                     title: activity.name,
                     subtitle: 'rating: ' + activity.avgRating + '/10',
                     buttons: [{
-                        type: "web_url",
+                        type: "postback",
                         title: "View",
-                        url: msAPP + '/activity/' + activity._id
+                        payload: "App"
                     }]
                 }]
             }
         }
     });
     sendMessage(recipientID, {
-        text: msAPP + '/activity/' + activity._id
+        text: activity.name + ": " msAPP + '/activity/' + promotion.activityId._id
     });
 }
 
@@ -250,16 +246,16 @@ function sendBusinessTempelate(recipientID, business) {
                     title: business.name,
                     subtitle: business.description,
                     buttons: [{
-                        type: "web_url",
+                        type: "postback",
                         title: "View",
-                        url: msAPP + '/profile/?username=' + business.userId.username
+                        payload: "App"
                     }]
                 }]
             }
         }
     });
     sendMessage(recipientID, {
-        text: msAPP + '/profile/?username=' + business.userId.username
+        text: business.name + ": " + msAPP + '/profile/?username=' + business.userId.username
     });
 }
 
@@ -291,16 +287,16 @@ function sendPromotionTempelate(recipientID, promotion) {
                     title: promotion.discountValue + '% OFF',
                     subtitle: promotion.activityId.name,
                     buttons: [{
-                        type: "web_url",
+                        type: "postback",
                         title: "View",
-                        url: msAPP + '/activity/' + promotion.activityId._id
+                        payload: "App"
                     }]
                 }]
             }
         }
     });
     sendMessage(recipientID, {
-        text: msAPP + '/activity/' + promotion.activityId._id
+        text: promotion.activityId.name + ": " msAPP + '/activity/' + promotion.activityId._id
     });
 }
 
