@@ -197,7 +197,7 @@ function sendActivityTempelate(recipientID, activity) {
         }
     });
     sendMessage(recipientID, {
-        text: activity.name + ": " msAPP + '/activity/' + promotion.activityId._id
+        text: activity.name + ": " + msAPP + '/activity/' + promotion.activityId._id
     });
 }
 
@@ -296,7 +296,8 @@ function sendPromotionTempelate(recipientID, promotion) {
         }
     });
     sendMessage(recipientID, {
-        text: promotion.activityId.name + ": " msAPP + '/activity/' + promotion.activityId._id
+        text: promotion.activityId.name + ": "
+        msAPP + '/activity/' + promotion.activityId._id
     });
 }
 
