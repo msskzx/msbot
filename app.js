@@ -161,32 +161,34 @@ function sendActivityTempelate(recipientID, activity) {
     console.log("temp");
 
     var message = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "title": activity.name,
-                    "image_url": image,
-                    "subtitle": activity.businessId.name,
-                    "default_action": {
-                        "type": "web_url",
-                        "url": msAPP + "/activity/" + activity._id,
-                        "messenger_extensions": true,
-                        "webview_height_ratio": "tall",
-                        "fallback_url": msAPP
+        attachment: {
+            type: "template",
+            payload: {
+                template_type: "generic",
+                elements: [{
+                    title: activity.name,
+                    image_url: image,
+                    subtitle: activity.businessId.name,
+                    default_action: {
+                        type: "web_url",
+                        url: msAPP + "/activity/" + activity._id,
+                        messenger_extensions: true,
+                        webview_height_ratio: "tall",
+                        fallback_url: msAPP
                     },
-                    "buttons": [{
-                        "type": "web_url",
-                        "url": msAPP + "/activity/" + activity._id,
-                        "title": "Reserve"
+                    buttons: [{
+                        type: "web_url",
+                        url: msAPP + "/activity/" + activity._id,
+                        title: "Reserve"
                     }]
                 }]
             }
         }
     };
 
+    console.log(message);
     sendMessage(recipientID, message);
+    sendMessage(recipientID, {text: "trying"});
 }
 
 
