@@ -173,6 +173,12 @@ function activitySearch(senderID, keyword) {
             for (var i = 0; i < activities.length && i < 5; i++) {
                 sendActivityTempelate(senderID, activities[i]);
             }
+            if(activities.length === 0)
+            {
+                sendMessage(senderID, {
+                    text: "no results"
+                });
+            }
         }
     });
 }
@@ -197,7 +203,7 @@ function sendActivityTempelate(recipientID, activity) {
         }
     });
     sendMessage(recipientID, {
-        text: activity.name + ": " + msAPP + '/activity/' + promotion.activityId._id
+        text: activity.name + ": " + msAPP + '/activity/' + activity._id
     });
 }
 
@@ -230,6 +236,12 @@ function businessSearch(senderID, keyword) {
             var businesses = JSON.parse(body).data.businesses;
             for (var i = 0; i < businesses.length && i < 5; i++) {
                 sendBusinessTempelate(senderID, businesses[i]);
+            }
+            if(businesses.length === 0)
+            {
+                sendMessage(senderID, {
+                    text: "no results"
+                });
             }
         }
     });
