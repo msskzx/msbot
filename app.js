@@ -102,7 +102,7 @@ function processMessage(event) {
                     break;
 
                 case 'test':
-                    sendMessage(recipientID, {
+                    sendMessage(senderID, {
                         attachment: {
                             type: "image",
                             payload: {
