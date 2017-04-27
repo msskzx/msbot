@@ -50,13 +50,9 @@ function processPostback(event) {
     var senderID = event.sender.id;
     var payload = event.postback.payload;
 
-    if (payload === "Correct") {
+    if (payload === "App") {
         sendMessage(senderID, {
-            text: "Yay!"
-        });
-    } else if (payload === "Incorrect") {
-        sendMessage(senderID, {
-            text: "Oops!"
+            text: 'you can check them here: ' + msAPP
         });
     }
 }
@@ -138,13 +134,12 @@ function sendMessage(recipientID, message) {
 
 function sendHelp(senderID) {
     sendMessage(senderID, {
-        text:
-        `activities (gets max of 5 activities)
-        businesses (gets max of 5 businesses)
-        promotions (gets max of 5 promotions)
-        search a "keword" (search activities using the given keyword)
-        search b "keword" (search businesses using the given keyword)
-        help (list of available commands)`
+        text: `"activities" (gets max of 5 activities)\n---\n` +
+            `"businesses" (gets max of 5 businesses)\n---\n` +
+            `"promotions" (gets max of 5 promotions)\n---\n` +
+            `"search a <keword>" (search activities using the given keyword)\n---\n` +
+            `"search b <keword>" (search businesses using the given keyword)\n---\n` +
+            `"help" (list of available commands)\n`
     });
 }
 
@@ -178,6 +173,12 @@ function activitySearch(senderID, keyword) {
             for (var i = 0; i < activities.length && i < 5; i++) {
                 sendActivityTempelate(senderID, activities[i]);
             }
+            if(activities.length === 0)
+            {
+                sendMessage(senderID, {
+                    text: "no results"
+                });
+            }
         }
     });
 }
@@ -191,15 +192,18 @@ function sendActivityTempelate(recipientID, activity) {
                 template_type: "generic",
                 elements: [{
                     title: activity.name,
-                    subtitle: activity.avgRating + '/10',
+                    subtitle: 'rating: ' + activity.avgRating + '/10',
                     buttons: [{
-                        type: "web_url",
+                        type: "postback",
                         title: "View",
-                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                        payload: "App"
                     }]
                 }]
             }
         }
+    });
+    sendMessage(recipientID, {
+        text: activity.name + ": " + msAPP + '/activity/' + activity._id
     });
 }
 
@@ -233,6 +237,12 @@ function businessSearch(senderID, keyword) {
             for (var i = 0; i < businesses.length && i < 5; i++) {
                 sendBusinessTempelate(senderID, businesses[i]);
             }
+            if(businesses.length === 0)
+            {
+                sendMessage(senderID, {
+                    text: "no results"
+                });
+            }
         }
     });
 }
@@ -248,13 +258,16 @@ function sendBusinessTempelate(recipientID, business) {
                     title: business.name,
                     subtitle: business.description,
                     buttons: [{
-                        type: "web_url",
+                        type: "postback",
                         title: "View",
-                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                        payload: "App"
                     }]
                 }]
             }
         }
+    });
+    sendMessage(recipientID, {
+        text: business.name + ": " + msAPP + '/profile/?username=' + business.userId.username
     });
 }
 
@@ -286,13 +299,16 @@ function sendPromotionTempelate(recipientID, promotion) {
                     title: promotion.discountValue + '% OFF',
                     subtitle: promotion.activityId.name,
                     buttons: [{
-                        type: "web_url",
+                        type: "postback",
                         title: "View",
-                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                        payload: "App"
                     }]
                 }]
             }
         }
+    });
+    sendMessage(recipientID, {
+        text: promotion.activityId.name + ": " + msAPP + '/activity/' + promotion.activityId._id
     });
 }
 
