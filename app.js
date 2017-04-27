@@ -138,12 +138,12 @@ function sendMessage(recipientID, message) {
 
 function sendHelp(senderID) {
     sendMessage(senderID, {
-        text: `"activities" (gets max of 5 activities)
-        "businesses" (gets max of 5 businesses)
-        "promotions" (gets max of 5 promotions)
-        "search a <keword>" (search activities using the given keyword)
-        "search b <keword>" (search businesses using the given keyword)
-        "help" (list of available commands)`
+        text: `"activities" (gets max of 5 activities)\n` +
+            `"businesses" (gets max of 5 businesses)\n` +
+            `"promotions" (gets max of 5 promotions)+\n` +
+            `"search a <keword>" (search activities using the given keyword)\n` +
+            `"search b <keword>" (search businesses using the given keyword)\n` +
+            `"help" (list of available commands)\n`
     });
 }
 
@@ -190,11 +190,11 @@ function sendActivityTempelate(recipientID, activity) {
                 template_type: "generic",
                 elements: [{
                     title: activity.name,
-                    subtitle: activity.avgRating + '/10',
+                    subtitle: 'rating: ' + activity.avgRating + '/10',
                     buttons: [{
                         type: "web_url",
                         title: "View",
-                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                        url: msAPP + '/activity/' + activity._id
                     }]
                 }]
             }
@@ -252,7 +252,7 @@ function sendBusinessTempelate(recipientID, business) {
                     buttons: [{
                         type: "web_url",
                         title: "View",
-                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                        url: msAPP + '/profile/?username=' + business.userId.username
                     }]
                 }]
             }
@@ -293,7 +293,7 @@ function sendPromotionTempelate(recipientID, promotion) {
                     buttons: [{
                         type: "web_url",
                         title: "View",
-                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                        url: msAPP + '/activity/' + promotion.activityId._id
                     }]
                 }]
             }
