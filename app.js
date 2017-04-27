@@ -114,7 +114,6 @@ function processMessage(event) {
     }
 }
 
-// sends message to user
 function sendMessage(recipientID, message) {
     request({
         url: "https://graph.facebook.com/v2.6/me/messages",
@@ -145,6 +144,7 @@ function activityIndex(senderID) {
         } else {
             var activities = JSON.parse(body).data.activities;
             for (var i = 0; i < activities.length && i < 5; i++) {
+                console.log("send");
                 sendActivityTempelate(senderID, activities[i]);
             }
         }
@@ -152,52 +152,41 @@ function activityIndex(senderID) {
 }
 
 function sendActivityTempelate(recipientID, activity) {
+    console.log("image");
     var image = "";
     if (activity.images && activity.images.length > 0) {
         image = activity.images[0];
     }
 
-    request({
-        url: "https://graph.facebook.com/v2.6/me/messages",
-        qs: {
-            access_token: process.env.ACCESS_TOKEN
-        },
-        method: "POST",
-        json: {
-            "recipient": {
-                "id": recipientID
-            },
-            "message": {
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "generic",
-                        "elements": [{
-                            "title": activity.name,
-                            "image_url": "",
-                            "subtitle": activity.businessId.name,
-                            "default_action": {
-                                "type": "web_url",
-                                "url": msAPP + "/activity/" + activity._id,
-                                "messenger_extensions": true,
-                                "webview_height_ratio": "tall",
-                                "fallback_url": msAPP
-                            },
-                            "buttons": [{
-                                "type": "web_url",
-                                "url": msAPP + "/activity/" + activity._id,
-                                "title": "Reserve"
-                            }]
-                        }]
-                    }
-                }
+    console.log("temp");
+
+    var message = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [{
+                    "title": activity.name,
+                    "image_url": image,
+                    "subtitle": activity.businessId.name,
+                    "default_action": {
+                        "type": "web_url",
+                        "url": msAPP + "/activity/" + activity._id,
+                        "messenger_extensions": true,
+                        "webview_height_ratio": "tall",
+                        "fallback_url": msAPP
+                    },
+                    "buttons": [{
+                        "type": "web_url",
+                        "url": msAPP + "/activity/" + activity._id,
+                        "title": "Reserve"
+                    }]
+                }]
             }
         }
-    }, function(error, response, body) {
-        if (error) {
-            console.log("Error sending message: " + response.error);
-        }
-    });
+    };
+
+    sendMessage(recipientID, message);
 }
 
 
