@@ -193,17 +193,14 @@ function sendActivityTempelate(recipientID, activity) {
             payload: {
                 template_type: "generic",
                 elements: [{
-                    title: "Dang",
-                    subtitle: "Right?",
+                    title: activity.name,
+                    subtitle: "",
+                    image_url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg",
                     buttons: [{
-                        type: "postback",
-                        title: "Yes",
-                        payload: "Correct"
-                    }, {
-                        type: "postback",
-                        title: "No",
-                        payload: "Incorrect"
-                    }]
+                        type: "web_url",
+                        title: "View",
+                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg",
+                    }
                 }]
             }
         }
