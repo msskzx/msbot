@@ -138,14 +138,13 @@ function sendMessage(recipientID, message) {
 
 function sendHelp(senderID) {
     sendMessage(senderID, {
-        text: `
-        activities -> gets max of 5 activities\n
-        businesses -> gets max of 5 businesses\n
-        promotions -> gets max of 5 promotions\n
-        search a \"keword\" -> search activities using the given keyword
-        search b \"keword\" -> search businesses using the given keyword
-        help -> list of available commands
-        `
+        text:
+        `activities (gets max of 5 activities)
+        businesses (gets max of 5 businesses)
+        promotions (gets max of 5 promotions)
+        search a "keword" (search activities using the given keyword)
+        search b "keword" (search businesses using the given keyword)
+        help (list of available commands)`
     });
 }
 
