@@ -2,7 +2,8 @@ var express = require("express");
 var request = require("request");
 var bodyParser = require("body-parser");
 
-const msAPI = 'http://35.160.199.92:8080'
+const msAPI = 'http://35.160.199.92:8080';
+const msAPP = 'http://35.160.199.92:8000';
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -49,27 +50,7 @@ function processPostback(event) {
     var senderID = event.sender.id;
     var payload = event.postback.payload;
 
-    if (payload === "Greeting") {
-        request({
-            url: "https://graph.facebook.com/v2.6/" + senderID,
-            qs: {
-                access_token: process.env.ACCESS_TOKEN,
-                fields: "first_name"
-            },
-            method: "GET"
-        }, function(error, response, body) {
-            var greeting = "";
-            if (error) {
-                console.log("Error getting user's name: " + error);
-            } else {
-                var bodyObj = JSON.parse(body);
-                greeting = "Hey, " + bodyObj.first_name + "!";
-            }
-            sendMessage(senderID, {
-                text: greeting
-            });
-        });
-    } else if (payload === "Correct") {
+    if (payload === "Correct") {
         sendMessage(senderID, {
             text: "Yay!"
         });
@@ -87,34 +68,54 @@ function processMessage(event) {
 
         if (message.text) {
             var formattedMsg = message.text.toLowerCase().trim();
-            switch (formattedMsg) {
-                case 'activities':
-                    activityIndex(senderID);
-                    break;
 
-                case 'businesses':
-                    businessIndex(senderID);
-                    break;
-
-                case 'promotions':
-                    promotionIndex(senderID);
-                    break;
-
-                default:
-                    sendMessage(senderID, {
-                        text: "bitte?"
-                    });
+            if (formattedMsg === 'activities') {
+                activityIndex(senderID);
+                return;
             }
-        } else if (message.attachments) {
+
+            if (formattedMsg === 'businesses') {
+                businessIndex(senderID);
+                return;
+            }
+
+            if (formattedMsg === 'promotions') {
+                promotionIndex(senderID);
+                return;
+            }
+
+            if (formattedMsg === 'help') {
+                sendHelp(senderID);
+                return;
+            }
+
+            if (formattedMsg.length > 8 && formattedMsg.substring(0, 8) === 'search a') {
+                activitySearch(senderID, formattedMsg.substring(9));
+                return;
+            }
+
+
+            if (formattedMsg.length > 8 && formattedMsg.substring(0, 8) === 'search b') {
+                businessSearch(senderID, formattedMsg.substring(9));
+                return;
+            }
+
             sendMessage(senderID, {
-                text: "bitte?"
+                text: "you can type \"help\" to get a list of available commands"
             });
+        } else {
+            if (message.attachments) {
+                sendMessage(senderID, {
+                    text: "cannot process attachments yet :/"
+                });
+            }
+
         }
     }
 }
 
-// sends message to user
-function sendMessage(recipientId, message) {
+
+function sendMessage(recipientID, message) {
     request({
         url: "https://graph.facebook.com/v2.6/me/messages",
         qs: {
@@ -123,7 +124,7 @@ function sendMessage(recipientId, message) {
         method: "POST",
         json: {
             recipient: {
-                id: recipientId
+                id: recipientID
             },
             message: message,
         }
@@ -134,6 +135,20 @@ function sendMessage(recipientId, message) {
     });
 }
 
+
+function sendHelp(senderID) {
+    sendMessage(senderID, {
+        text:
+        `activities (gets max of 5 activities)
+        businesses (gets max of 5 businesses)
+        promotions (gets max of 5 promotions)
+        search a "keword" (search activities using the given keyword)
+        search b "keword" (search businesses using the given keyword)
+        help (list of available commands)`
+    });
+}
+
+
 function activityIndex(senderID) {
     request({
         url: msAPI + "/activities/page/0",
@@ -143,13 +158,51 @@ function activityIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var activities = JSON.parse(body).data.activities;
-            for (var i = 0; i < activities.length && i < 5; i++)
-            {
-                sendMessage(senderID, { text: activities[i].name });
+            for (var i = 0; i < activities.length && i < 5; i++) {
+                sendActivityTempelate(senderID, activities[i]);
             }
         }
     });
 }
+
+
+function activitySearch(senderID, keyword) {
+    request({
+        url: msAPI + "/search/activities?q=" + keyword,
+        method: "GET"
+    }, function(errors, response, body) {
+        if (errors) {
+            console.log("Error sending message: " + response.errors);
+        } else {
+            var activities = JSON.parse(body).data.activities;
+            for (var i = 0; i < activities.length && i < 5; i++) {
+                sendActivityTempelate(senderID, activities[i]);
+            }
+        }
+    });
+}
+
+
+function sendActivityTempelate(recipientID, activity) {
+    sendMessage(recipientID, {
+        attachment: {
+            type: "template",
+            payload: {
+                template_type: "generic",
+                elements: [{
+                    title: activity.name,
+                    subtitle: activity.avgRating + '/10',
+                    buttons: [{
+                        type: "web_url",
+                        title: "View",
+                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                    }]
+                }]
+            }
+        }
+    });
+}
+
 
 function businessIndex(senderID) {
     request({
@@ -160,13 +213,51 @@ function businessIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var businesses = JSON.parse(body).data.businesses;
-            for (var i = 0; i < businesses.length && i < 5; i++)
-            {
-                sendMessage(senderID, { text: businesses[i].name });
+            for (var i = 0; i < businesses.length && i < 5; i++) {
+                sendBusinessTempelate(senderID, businesses[i]);
             }
         }
     });
 }
+
+
+function businessSearch(senderID, keyword) {
+    request({
+        url: msAPI + "/search/businesses?q=" + keyword,
+        method: "GET"
+    }, function(errors, response, body) {
+        if (errors) {
+            console.log("Error sending message: " + response.errors);
+        } else {
+            var businesses = JSON.parse(body).data.businesses;
+            for (var i = 0; i < businesses.length && i < 5; i++) {
+                sendBusinessTempelate(senderID, businesses[i]);
+            }
+        }
+    });
+}
+
+
+function sendBusinessTempelate(recipientID, business) {
+    sendMessage(recipientID, {
+        attachment: {
+            type: "template",
+            payload: {
+                template_type: "generic",
+                elements: [{
+                    title: business.name,
+                    subtitle: business.description,
+                    buttons: [{
+                        type: "web_url",
+                        title: "View",
+                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                    }]
+                }]
+            }
+        }
+    });
+}
+
 
 function promotionIndex(senderID) {
     request({
@@ -177,9 +268,29 @@ function promotionIndex(senderID) {
             console.log("Error sending message: " + response.errors);
         } else {
             var promotions = JSON.parse(body).data.promotions;
-            for (var i = 0; i < promotions.length && i < 5; i++)
-            {
-                sendMessage(senderID, { text: promotions[i].discountValue });
+            for (var i = 0; i < promotions.length && i < 5; i++) {
+                sendPromotionTempelate(senderID, promotions[i]);
+            }
+        }
+    });
+}
+
+
+function sendPromotionTempelate(recipientID, promotion) {
+    sendMessage(recipientID, {
+        attachment: {
+            type: "template",
+            payload: {
+                template_type: "generic",
+                elements: [{
+                    title: promotion.discountValue + '% OFF',
+                    subtitle: promotion.activityId.name,
+                    buttons: [{
+                        type: "web_url",
+                        title: "View",
+                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                    }]
+                }]
             }
         }
     });
