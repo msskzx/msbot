@@ -101,6 +101,17 @@ function processMessage(event) {
                     promotionIndex(senderID);
                     break;
 
+                case 'test':
+                    sendMessage(recipientID, {
+                        attachment: {
+                            type: "image",
+                            payload: {
+                                "url": "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                            }
+                        }
+                    });
+                    break;
+
                 default:
                     sendMessage(senderID, {
                         text: "bitte?"
@@ -152,13 +163,10 @@ function activityIndex(senderID) {
 }
 
 function sendActivityTempelate(recipientID, activity) {
-    console.log("image");
     var image = "";
     if (activity.images && activity.images.length > 0) {
         image = activity.images[0];
     }
-
-    console.log("temp");
 
     var message = {
         attachment: {
@@ -186,9 +194,7 @@ function sendActivityTempelate(recipientID, activity) {
         }
     };
 
-    console.log(message);
     sendMessage(recipientID, message);
-    sendMessage(recipientID, {text: "trying"});
 }
 
 
