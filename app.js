@@ -192,14 +192,14 @@ function sendActivityTempelate(recipientID, activity) {
         image = activity.images[0];
     }
 
-    var message = {
+    sendMessage(recipientID, {
         attachment: {
             type: "template",
             payload: {
-                template_type: "generic",
+                type: "generic",
                 elements: [{
                     title: activity.name,
-                    image_url: image,
+                    image_url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg",
                     subtitle: activity.businessId.name,
                     default_action: {
                         type: "web_url",
@@ -216,9 +216,7 @@ function sendActivityTempelate(recipientID, activity) {
                 }]
             }
         }
-    };
-
-    sendMessage(recipientID, message);
+    });
 }
 
 
