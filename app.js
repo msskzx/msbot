@@ -101,12 +101,36 @@ function processMessage(event) {
                     promotionIndex(senderID);
                     break;
 
-                case 'test':
+                case 'image':
                     sendMessage(senderID, {
                         attachment: {
                             type: "image",
                             payload: {
                                 "url": "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                            }
+                        }
+                    });
+                    break;
+
+                case 'temp':
+                    sendMessage(senderID, {
+                        attachment: {
+                            type: "template",
+                            payload: {
+                                template_type: "generic",
+                                elements: [{
+                                    title: "Dang",
+                                    subtitle: "Right?",
+                                    buttons: [{
+                                        type: "postback",
+                                        title: "Yes",
+                                        payload: "Correct"
+                                    }, {
+                                        type: "postback",
+                                        title: "No",
+                                        payload: "Incorrect"
+                                    }]
+                                }]
                             }
                         }
                     });
