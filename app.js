@@ -197,7 +197,7 @@ function sendActivityTempelate(recipientID, activity) {
                     buttons: [{
                         type: "web_url",
                         title: "View",
-                        url: msAPP + "/activity/" + activity._id,
+                        url: msAPP,
                     }]
                 }]
             }
