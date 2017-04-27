@@ -197,7 +197,7 @@ function sendActivityTempelate(recipientID, activity) {
                     buttons: [{
                         type: "web_url",
                         title: "View",
-                        url: 'http://35.160.199.92:8000'
+                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
                     }]
                 }]
             }
