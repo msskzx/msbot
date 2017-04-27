@@ -152,6 +152,11 @@ function activityIndex(senderID) {
 }
 
 function sendActivityTempelate(recipientID, activity) {
+    var image = activity.images[0];
+    if (!image) {
+        image = "";
+    }
+
     request({
         url: "https://graph.facebook.com/v2.6/me/messages",
         qs: {
@@ -169,18 +174,18 @@ function sendActivityTempelate(recipientID, activity) {
                         "template_type": "generic",
                         "elements": [{
                             "title": activity.name,
-                            "image_url": activity.images[0],
+                            "image_url": "",
                             "subtitle": activity.businessId.name,
                             "default_action": {
                                 "type": "web_url",
-                                "url": msAPP+"/activity/"+activity._id,
+                                "url": msAPP + "/activity/" + activity._id,
                                 "messenger_extensions": true,
                                 "webview_height_ratio": "tall",
                                 "fallback_url": msAPP
                             },
                             "buttons": [{
                                 "type": "web_url",
-                                "url": msAPP+"/activity/"+activity._id,
+                                "url": msAPP + "/activity/" + activity._id,
                                 "title": "Reserve"
                             }]
                         }]
