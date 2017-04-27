@@ -193,7 +193,7 @@ function sendActivityTempelate(recipientID, activity) {
                 template_type: "generic",
                 elements: [{
                     title: activity.name,
-                    image_url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg",
+                    subtitle: activity.avgRating + '/10.0',
                     buttons: [{
                         type: "web_url",
                         title: "View",
@@ -216,13 +216,33 @@ function businessIndex(senderID) {
         } else {
             var businesses = JSON.parse(body).data.businesses;
             for (var i = 0; i < businesses.length && i < 5; i++) {
-                sendMessage(senderID, {
-                    text: businesses[i].name
-                });
+                sendBusinessTempelate(senderID, businesses[i]);
             }
         }
     });
 }
+
+
+function sendBusinessTempelate(recipientID, business) {
+    sendMessage(recipientID, {
+        attachment: {
+            type: "template",
+            payload: {
+                template_type: "generic",
+                elements: [{
+                    title: business.name,
+                    subtitle: business.avgRating + '/10.0',
+                    buttons: [{
+                        type: "web_url",
+                        title: "View",
+                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                    }]
+                }]
+            }
+        }
+    });
+}
+
 
 function promotionIndex(senderID) {
     request({
@@ -234,9 +254,28 @@ function promotionIndex(senderID) {
         } else {
             var promotions = JSON.parse(body).data.promotions;
             for (var i = 0; i < promotions.length && i < 5; i++) {
-                sendMessage(senderID, {
-                    text: promotions[i].discountValue
-                });
+                sendPromotionTempelate(senderID, promotions[i]);
+            }
+        }
+    });
+}
+
+
+function sendPromotionTempelate(recipientID, promotion) {
+    sendMessage(recipientID, {
+        attachment: {
+            type: "template",
+            payload: {
+                template_type: "generic",
+                elements: [{
+                    title: promotion.discountValue + '% OFF',
+                    subtitle: promotion.activityId.name,
+                    buttons: [{
+                        type: "web_url",
+                        title: "View",
+                        url: "https://ig-s-d-a.akamaihd.net/hphotos-ak-xat1/t51.2885-15/e35/p480x480/17817477_1292804597440327_6962809149855891456_n.jpg"
+                    }]
+                }]
             }
         }
     });
