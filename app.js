@@ -152,9 +152,9 @@ function activityIndex(senderID) {
 }
 
 function sendActivityTempelate(recipientID, activity) {
-    var image = activity.images[0];
-    if (!image) {
-        image = "";
+    var image = "";
+    if (images.length > 0) {
+        image = activity.images[0];
     }
 
     request({
